@@ -5,13 +5,12 @@ import AsyncSelect from 'react-select/async';
 import { debounce } from "debounce";
 import MovieRow from "./components/MovieRow";
 import TMDBMovie from "./lib/interfaces";
-import KEYS from './lib/keys';
 import appStyles from './App.module.css';
 
 function App() {
   const [ err, setErr ] = React.useState<string>('');
   const [ movies, setMovies ] = React.useState<Array<TMDBMovie>>([]);
-  const { TMDB_API_KEY } = process.env;
+  const { REACT_APP_TMDB_API_KEY } = process.env;
   React.useEffect(() => {
       function fetchMovies() {
           axios.get('https://8q2bqpt45e.execute-api.us-east-2.amazonaws.com/beta/get-movies')
@@ -56,7 +55,7 @@ function App() {
   }
 
   function searchMovies(inputValue: string, callback: Function) {
-      axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY || KEYS.TMDB}&language=en-US&query=${inputValue}&page=1&include_adult=false`)
+      axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${REACT_APP_TMDB_API_KEY}&language=en-US&query=${inputValue}&page=1&include_adult=false`)
           .then((res: AxiosResponse) => {
               const { data: { results } } = res;
               const strippedResults: Array<TMDBMovie> = results.map((result: any) => {

@@ -1,7 +1,6 @@
 import moment from "moment";
 import React from "react";
 import classNames from 'classnames';
-import KEYS from '../../lib/keys';
 import TMDBMovie from "../../lib/interfaces";
 import styles from "./MovieRow.module.css";
 
@@ -12,8 +11,8 @@ interface IEProps {
 
 function MovieRow({ data, handleSelection }: IEProps) {
 	const { id, title, poster_path, overview, release_date, vote_average, watched } = data;
-	const { TMDB_API_KEY } = process.env;
-	const imgUrl = `https://image.tmdb.org/t/p/original${poster_path}?api_key=${TMDB_API_KEY || KEYS.TMDB}`;
+	const { REACT_APP_TMDB_API_KEY } = process.env;
+	const imgUrl = `https://image.tmdb.org/t/p/original${poster_path}?api_key=${REACT_APP_TMDB_API_KEY}`;
 	const overviewWrap = 200;
 	const parsedDate = moment(release_date, 'YYYY-MM-DD');
 	const titleClass = classNames(styles.tmdb_title, {
