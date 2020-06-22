@@ -11,6 +11,7 @@ interface IEProps {
 
 function MovieRow({ data, handleSelection }: IEProps) {
 	const { id, title, poster_path, overview, release_date, vote_average, watched } = data;
+	console.log(process.env);
 	const { REACT_APP_TMDB_API_KEY } = process.env;
 	const imgUrl = `https://image.tmdb.org/t/p/original${poster_path}?api_key=${REACT_APP_TMDB_API_KEY}`;
 	const overviewWrap = 200;
