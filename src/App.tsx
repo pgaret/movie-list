@@ -10,7 +10,6 @@ import appStyles from './App.module.css';
 function App() {
   const [ err, setErr ] = React.useState<string>('');
   const [ movies, setMovies ] = React.useState<Array<TMDBMovie>>([]);
-  const { REACT_APP_TMDB_API_KEY } = process.env;
   React.useEffect(() => {
       function fetchMovies() {
           axios.get('https://8q2bqpt45e.execute-api.us-east-2.amazonaws.com/beta/get-movies')
@@ -24,7 +23,6 @@ function App() {
   }, [setMovies]);
 
   function handleSetWatched(movie: TMDBMovie) {
-      console.log(movie);
       handleWatchedMovie(movie.id, !movie.watched);
   }
 
@@ -55,6 +53,7 @@ function App() {
   }
 
   function searchMovies(inputValue: string, callback: Function) {
+      const { REACT_APP_TMDB_API_KEY } = process.env;
       axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${REACT_APP_TMDB_API_KEY}&language=en-US&query=${inputValue}&page=1&include_adult=false`)
           .then((res: AxiosResponse) => {
               const { data: { results } } = res;
@@ -83,25 +82,40 @@ function App() {
       handleSubmitMovie(movie);
   }
 
+  interface NoOptionsProps {
+      inputValue: string
+  }
+
+  function getNoOptionsMessage({ inputValue }: NoOptionsProps) {
+      if (inputValue === "") {
+          return "Enter a search";
+      } else {
+          return "No options";
+      }
+  }
+
   const styles: Styles = {
-      container: (styles) => ({ ...styles, width: '100%' })
+      container: (styles) => ({ ...styles, width: '100%' }),
+      menuList: (styles) => ({ ...styles, border: 'solid 8px rgba(0, 100, 200, 0.25)' })
   };
 
+  // menuIsOpen to keep open
   return (
   	<div className={appStyles.container}>
-      <h1>NYN Movie List</h1>
+      <h1>Movie Checklist</h1>
       <div>
           <AsyncSelect
               cacheOptions
               closeMenuOnSelect={true}
               styles={styles}
               placeholder="Search for a movie..."
+              noOptionsMessage={getNoOptionsMessage}
               loadOptions={debouncedSearchMovies}
               onInputChange={handleSearchInput}
               components={{ Option: (props) => <MovieRow handleSelection={handleSelection} {...props} /> }}
           />
           <section className={appStyles.movie_list}>
-              { movies.map(movie => <MovieRow data={movie} handleSelection={handleSetWatched} />)}
+              { movies.map(movie => <MovieRow key={movie.id} data={movie} handleSelection={handleSetWatched} />)}
           </section>
       </div>
     </div>
