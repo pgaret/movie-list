@@ -1,4 +1,4 @@
-interface TMDBMovie {
+export interface TMDBMovie {
 	id: string,
 		title: string,
 		overview: string,
@@ -7,5 +7,3 @@ interface TMDBMovie {
 		poster_path: string,
 		watched: boolean
 }
-
-export default TMDBMovie;

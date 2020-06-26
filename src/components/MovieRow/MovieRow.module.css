@@ -1,6 +1,8 @@
 .tmdb_row {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    width: 100%;
     height: 100px;
     padding: 8px;
     border-bottom: 1px solid black;
@@ -27,6 +29,7 @@
 
 .tmdb_data {
     margin-left: 8px;
+    width: 100%;
 }
 
 .tmdb_title {
@@ -75,4 +78,8 @@
 }
 
 .smol_text {
+}
+
+.full_width {
+    width: 100%;
 }
