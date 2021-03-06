@@ -51,8 +51,7 @@ function App() {
 
   function searchMovies(inputValue: string, callback: Function) {
       console.log(process.env);
-      const { REACT_APP_TMDB_API_KEY } = process.env;
-      api.TMDB.search(REACT_APP_TMDB_API_KEY, inputValue)
+      api.MOVIES.search(inputValue)
           .then((res: AxiosResponse) => {
               const { data: { results } } = res;
               const strippedResults: Array<TMDBMovie> = results.map((result: any) => {

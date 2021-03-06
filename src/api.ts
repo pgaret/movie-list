@@ -9,10 +9,8 @@ const api = {
 			`${URI}/movies`,
 			{ movie }
 		),
-		watch: (id: string) => axios.patch(`${URI}/movies/${id}`)
-	},
-	TMDB: {
-		search: (key: string, term: string) => axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${key}&language=en-US&query=${term}&page=1&include_adult=false`)
+		watch: (id: string) => axios.patch(`${URI}/movies/${id}`),
+		search: (term: string) => axios.get(`${URI}/movies/search?term=${term}`)
 	}
 };
 
