@@ -1,0 +1,26 @@
+.movieListPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+
+    .listLoading {
+        display: flex;
+        margin-top: 24px;
+    }
+
+    .listSelection {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .listSelector {
+            width: 200px;
+            margin-left: 2px;
+        }
+    }
+    
+    .listsContainer {
+        
+    }
+}
