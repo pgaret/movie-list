@@ -2,27 +2,26 @@ import moment from "moment";
 import React from "react";
 import { Checkbox, CircularProgress, IconButton } from "@material-ui/core";
 import AddButton from '@material-ui/icons/Add'
+import CheckButton from '@material-ui/icons/Check'
 import classNames from 'classnames';
 import { TMDBMovie } from "lib/interfaces";
 import styles from "./MovieRow.module.scss";
 
 interface MovieRowProps {
 	data: TMDBMovie,
-	checkbox: MovieRowCheckbox
+	action: MovieRowAction
 	handleSelection: Function
-	loading?: boolean
+	loading: boolean,
 }
 
-interface MovieRowCheckbox {
-	enabled: boolean,
-	selected?: boolean,
-	handleClick?: Function
+interface MovieRowAction {
+	enabled: boolean
+	actionType: string
 }
 
-function MovieRow({ data, checkbox, loading, handleSelection }: MovieRowProps) {
+function MovieRow({ data, action, loading, handleSelection }: MovieRowProps) {
 	const { id, title, poster_path, overview, release_date, vote_average, watched } = data;
-	const { REACT_APP_TMDB_API_KEY } = process.env;
-	const imgUrl = `https://image.tmdb.org/t/p/original${poster_path}?api_key=${REACT_APP_TMDB_API_KEY}`;
+	const imgUrl = `https://image.tmdb.org/t/p/original${poster_path}`;
 	const overviewWrap = 200;
 	const parsedDate = moment(release_date, 'YYYY-MM-DD');
 
@@ -43,12 +42,13 @@ function MovieRow({ data, checkbox, loading, handleSelection }: MovieRowProps) {
 					<CircularProgress />
 				</div>
 				: <React.Fragment>
-					{ poster_path && <img src={imgUrl} className={styles.tmdbPoster} /> }
-					{ checkbox.enabled && (
-						<IconButton onClick={handleAddClick} aria-label="delete">
-							<AddButton />
+					{ action.enabled && (
+						<IconButton onClick={handleAddClick} disabled={watched} aria-label="action">
+							{ action.actionType === 'Add' && <AddButton /> }
+							{ action.actionType === 'Check' && <CheckButton /> }
 						</IconButton>
 					) }
+					{ poster_path && <img src={imgUrl} className={styles.tmdbPoster} /> }
 					<div className={styles.tmdbData}>
 						{ watched && <div>Watched</div> }
 						<div className={tmdb_row_header_styles}>

@@ -29,8 +29,20 @@
 }
 
 .addMovieContainer {
+  height: 100vh;
   .searchSection {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .inputField {
+      margin-bottom: 12px;
+    }
+  }
+  .deadSearch {
+    display: flex;
+    align-items: center;
     justify-content: center;
   }
 }

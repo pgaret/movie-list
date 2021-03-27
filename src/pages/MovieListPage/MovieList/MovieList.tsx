@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { AxiosError, AxiosResponse } from 'axios';
 import {
     Button,
@@ -37,30 +37,31 @@ export default function MovieList(props: MovieListProps) {
     const [ searchingMovies, setSearchingMovies ] = React.useState<boolean>(false);
     // Adding movie to list
     const [ submittingMovie, setSubmittingMovie ] = React.useState<string>('');
+    // Watching move
+    const [ watchingMovie, setWatchingMovie ] = React.useState<string>('');
     // Latest error
     const [ err, setErr ] = React.useState<string>('');
+    // Search input ref
+    const searchRef = useRef<HTMLInputElement>(null);
 
     const { list } = props;
 
     useEffect(() => {
-        function fetchMovies() {
-            api.LISTS.getMovies(list.id)
-                .then((res: AxiosResponse) => {
-                    setLoadingMovies(false);
-                   setMovies(res.data);
-                })
-                .catch((err: AxiosError) => {
-                    setLoadingMovies(false);
-                    setErr('Failed to load movies')
-                })
-        }
         if (list.id) {
             fetchMovies();
         }
     }, [list])
 
-    function handleSetWatched(movie: TMDBMovie) {
-        handleWatchedMovie(movie.id, !movie.watched);
+    function fetchMovies() {
+        api.LISTS.getMovies(list.id)
+            .then((res: AxiosResponse) => {
+                setLoadingMovies(false);
+               setMovies(res.data);
+            })
+            .catch((err: AxiosError) => {
+                setLoadingMovies(false);
+                setErr('Failed to load movies')
+            })
     }
 
     function handleSubmitMovie(movie: TMDBMovie) {
@@ -70,20 +71,23 @@ export default function MovieList(props: MovieListProps) {
             if (err) {
                 setErr(err);
             } else {
-                setMovies([ movie, ...movies ]);
+                fetchMovies();
+                setSearchedMovies(searchedMovies.filter(s => s.id !== movie.id));
             }
         });
     }
 
-    function handleWatchedMovie(movieId: string, checked: boolean) {
-        api.MOVIES.watch(movieId).then((res: AxiosResponse) => {
+    function handleWatchedMovie(movie: TMDBMovie) {
+        setWatchingMovie(movie.id);
+        api.MOVIES.watch(movie.id).then((res: AxiosResponse) => {
             if (err) {
                 setErr(err);
             } else {
                 const updatedMovies = [...movies];
-                const index = updatedMovies.findIndex((movie) => movie.id === movieId);
-                updatedMovies[index].watched = checked;
+                const index = updatedMovies.findIndex((w) => w.id === movie.id);
+                updatedMovies[index].watched = !movie.watched;
                 setMovies(updatedMovies);
+                setWatchingMovie('');
             }
         })
     }
@@ -121,10 +125,6 @@ export default function MovieList(props: MovieListProps) {
         setAddingMovies(!addingMovies);
     }
 
-    function handleAddMovie(movie: TMDBMovie) {
-        console.log(movie);
-    }
-
     const addMoveButtonTheme = createMuiTheme({
         palette: {
           primary: {
@@ -133,6 +133,8 @@ export default function MovieList(props: MovieListProps) {
           }
         }
       });
+
+    console.log(movies);
 
     return (
         <div className={styles.movieListContainer}>
@@ -152,31 +154,36 @@ export default function MovieList(props: MovieListProps) {
                         </DialogTitle>
                     <DialogContent dividers>
                         <div className={styles.searchSection}>
-                            { searchingMovies ?
-                                <CircularProgress />
-                                : <TextField
-                                    id="movie-search-input"
-                                    label="Search By Title"
-                                    placeholder="Search for a movie..."
-                                    onChange={handleSearchInput}
-                                />
-                            }
+                            <TextField
+                                id="movie-search-input"
+                                label="Search By Title"
+                                placeholder="Search for a movie..."
+                                className={styles.inputField}
+                                ref={searchRef}
+                                onChange={handleSearchInput}
+                            />
+                            { searchingMovies && <CircularProgress /> }
                         </div>
-                        { !searchingMovies && searchedMovies.map((movie) => (
+                        { !searchingMovies && searchedMovies.length > 0 && searchedMovies.map((movie) => (
                             <MovieRow
                                 handleSelection={handleSubmitMovie}
-                                checkbox={{
+                                action={{
                                     enabled: true,
-                                    handleClick: handleAddMovie
+                                    actionType: 'Add'
                                 }}
                                 data={movie}
                                 loading={submittingMovie === movie.id}
                             />
                         ))}
+                        { !searchingMovies && !searchedMovies.length && (
+                            <div className={styles.deadSearch}>
+                                No results found
+                            </div>
+                        )}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={toggleAddMovieModal} color="primary">
-                            Cancel
+                            Close
                         </Button>
                     </DialogActions>
                 </Dialog>
@@ -201,8 +208,12 @@ export default function MovieList(props: MovieListProps) {
                                     <MovieRow
                                         key={movie.id}
                                         data={movie}
-                                        handleSelection={handleSetWatched}
-                                        checkbox={{ enabled: false }}
+                                        loading={watchingMovie === movie.id}
+                                        handleSelection={handleWatchedMovie}
+                                        action={{
+                                            enabled: true,
+                                            actionType: 'Check'
+                                        }}
                                     />
                                 ))}
                             </section>
