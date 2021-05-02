@@ -1,0 +1,14 @@
+.signupContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .optionalFields {
+        display: flex;
+        margin-bottom: 8px;
+    }
+
+    .requiredFields {
+        display: flex;
+    }
+}

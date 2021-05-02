@@ -1,0 +1,77 @@
+.movieRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100% - 48px);
+    padding: 8px;
+    border-bottom: 1px solid black;
+    transition-duration: 200ms;
+
+    &.rowWatched {
+    }
+
+    .loading {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .tmdbPoster {
+        height: 75px;
+    }
+    
+    .tmdbData {
+        margin-left: 8px;
+        width: 100%;
+
+        .tmdbTitle {
+            font-weight: 700;
+            margin-right: 64px;
+            font-size: 18px;
+        }
+        
+        .metaData {
+            font-size: 16px;
+            color: darkgray;
+            font-style: italic;
+        }
+
+        .tmdbScore {
+            color: gold;
+        }        
+
+        .divider {
+            margin-left: 4px;
+            margin-right: 4px;
+        }
+
+        .tmdbDate {
+
+        }
+    }
+
+    .tmdbOverview {
+        font-size: 10px;
+        margin-top: 2px;
+    }
+}
+
+.row {
+    display: flex;
+}
+
+.spaceBetween {
+    justify-content: space-between;
+}
+
+.alignStart {
+    align-items: flex-start;
+}
+
+.alignCenter {
+    align-items: center;
+}
+
+.fullWidth {
+    width: 100%;
+}
