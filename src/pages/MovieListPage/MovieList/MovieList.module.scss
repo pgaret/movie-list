@@ -1,0 +1,58 @@
+.movieListContainer {
+    height: 100%;
+    display: flex;
+
+    .moviesLoaded {
+      width: 80vw;
+
+      section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .emptyList {
+          margin-top: 12px;
+        }
+        
+      }
+  
+      .listMeta {
+        display: flex;
+        justify-content: space-between;
+        width: calc(100% - 48px);
+        margin-top: 24px;
+  
+        .listName {
+          font-weight: 500;
+          font-size: 24px;
+        }
+      }
+    }
+
+    .moviesLoading {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin-top: 25px;
+    }
+}
+
+.addMovieContainer {
+  height: 100vh;
+  .searchSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .inputField {
+      margin-bottom: 12px;
+    }
+  }
+  .deadSearch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
