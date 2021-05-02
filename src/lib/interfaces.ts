@@ -17,6 +17,11 @@ export interface User {
 	phoneNumber: string
 }
 
+export interface NewList {
+	name: string,
+	userId: string
+}
+
 export interface List {
 	id: string,
 	name: string,

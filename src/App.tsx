@@ -1,8 +1,13 @@
 import React from 'react';
-import { BrowserRouter as Router, Redirect, Route, RouteProps } from 'react-router-dom';
+import {
+    BrowserRouter as Router,
+    Redirect,
+    Route,
+    RouteProps,
+} from 'react-router-dom';
 
-import AuthenticationPage from './pages/AuthenticationPage/AuthenticationPage'
-import MovieListPage from './pages/MovieListPage/MovieListPage'
+import AuthenticationPage from 'pages/AuthenticationPage/AuthenticationPage'
+import MovieListPage from 'pages/MovieListPage/MovieListPage'
 
 interface PrivateRouteProps {
     children: JSX.Element
@@ -12,7 +17,7 @@ interface PrivateRouteProps {
 
 function PrivateRoute({ children, ...rest }: PrivateRouteProps) {
     const hasAuth = !!localStorage.getItem('user');
-    
+
     return (
         <Route
             {...rest}
@@ -22,25 +27,25 @@ function PrivateRoute({ children, ...rest }: PrivateRouteProps) {
                 ) : (
                     <Redirect
                         to={{
-                            pathname: "/auth",
-                            state: { from: location }
+                            pathname: '/auth',
+                            state: { from: location },
                         }}
                     />
                 )
             }}
         />
-    )
+    );
 }
 
 export default function App() {
     return (
         <Router>
-        <Route exact path="/auth">
-          <AuthenticationPage />
-        </Route>
-        <PrivateRoute exact path="/">
-          <MovieListPage />
-        </PrivateRoute>
-      </Router>
-    )
+            <Route exact path="/auth">
+                <AuthenticationPage />
+            </Route>
+            <PrivateRoute exact path="/">
+                <MovieListPage />
+            </PrivateRoute>
+        </Router>
+    );
 }

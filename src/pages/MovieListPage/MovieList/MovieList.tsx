@@ -7,62 +7,58 @@ import {
     DialogTitle,
     DialogActions,
     DialogContent,
-    TextField
+    TextField,
 } from '@material-ui/core';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import { debounce } from "debounce";
-import MovieRow from "./MovieRow";
-import api from "api";
-import { TMDBMovie, List } from "lib/interfaces";
+import { debounce } from 'debounce';
+import { TMDBMovie, List } from 'lib/interfaces';
+import api from 'api';
+import MovieRow from './MovieRow';
 import styles from './MovieList.module.scss';
 
 interface MovieListProps {
     list: List
 }
 
-interface NoOptionsProps {
-    inputValue: string
-}
-
 export default function MovieList(props: MovieListProps) {
     // Loading movies in a list
-    const [ loadingMovies, setLoadingMovies ] = React.useState<boolean>(true);
+    const [loadingMovies, setLoadingMovies] = React.useState<boolean>(true);
     // Moves in the list
-    const [ movies, setMovies ] = React.useState<Array<TMDBMovie>>([]);
+    const [movies, setMovies] = React.useState<Array<TMDBMovie>>([]);
     // Add Movie dialog is open
-    const [ addingMovies, setAddingMovies ] = React.useState<boolean>(false);
+    const [addingMovies, setAddingMovies] = React.useState<boolean>(false);
     // Results from movie search
-    const [ searchedMovies, setSearchedMovies ] = React.useState<Array<TMDBMovie>>([]);
+    const [searchedMovies, setSearchedMovies] = React.useState<Array<TMDBMovie>>([]);
     // Searching movies
-    const [ searchingMovies, setSearchingMovies ] = React.useState<boolean>(false);
+    const [searchingMovies, setSearchingMovies] = React.useState<boolean>(false);
     // Adding movie to list
-    const [ submittingMovie, setSubmittingMovie ] = React.useState<string>('');
+    const [submittingMovie, setSubmittingMovie] = React.useState<string>('');
     // Watching move
-    const [ watchingMovie, setWatchingMovie ] = React.useState<string>('');
+    const [watchingMovie, setWatchingMovie] = React.useState<string>('');
     // Latest error
-    const [ err, setErr ] = React.useState<string>('');
+    const [err, setErr] = React.useState<string>('');
     // Search input ref
     const searchRef = useRef<HTMLInputElement>(null);
 
     const { list } = props;
 
+    function fetchMovies() {
+        setLoadingMovies(true);
+        api.LISTS.getMovies(list.id)
+            .then((res: AxiosResponse) => {
+                setLoadingMovies(false);
+                setMovies(res.data);
+            })
+            .catch((err: AxiosError) => {
+                setLoadingMovies(false);
+                setErr('Failed to load movies');
+            })
+    }
+
     useEffect(() => {
         if (list.id) {
             fetchMovies();
         }
-    }, [list])
-
-    function fetchMovies() {
-        api.LISTS.getMovies(list.id)
-            .then((res: AxiosResponse) => {
-                setLoadingMovies(false);
-               setMovies(res.data);
-            })
-            .catch((err: AxiosError) => {
-                setLoadingMovies(false);
-                setErr('Failed to load movies')
-            })
-    }
+    }, [list]);
 
     function handleSubmitMovie(movie: TMDBMovie) {
         setSubmittingMovie(movie.id);
@@ -72,7 +68,7 @@ export default function MovieList(props: MovieListProps) {
                 setErr(err);
             } else {
                 fetchMovies();
-                setSearchedMovies(searchedMovies.filter(s => s.id !== movie.id));
+                setSearchedMovies(searchedMovies.filter((s) => s.id !== movie.id));
             }
         });
     }
@@ -89,27 +85,25 @@ export default function MovieList(props: MovieListProps) {
                 setMovies(updatedMovies);
                 setWatchingMovie('');
             }
-        })
+        });
     }
 
     function searchMovies(inputValue: string) {
-        setSearchingMovies(true)
+        setSearchingMovies(true);
         api.MOVIES.search(inputValue)
             .then((res: AxiosResponse) => {
                 const { data: { results } } = res;
                 const strippedResults: Array<TMDBMovie> = results
-                .filter((result: any) => movies.findIndex((movie: TMDBMovie) => String(movie.id) === String(result.id)) === -1)
-                .map((result: any) => {
-                    return {
-                        id: ''+result.id,
+                    .filter((result: any) => movies.findIndex((movie: TMDBMovie) => String(movie.id) === String(result.id)) === -1)
+                    .map((result: any) => ({
+                        id: `${result.id}`,
                         title: result.title,
                         overview: result.overview,
                         vote_average: result.vote_average,
                         release_date: result.release_date,
-                        poster_path: result.poster_path
-                    };
-                });
-                setSearchingMovies(false)
+                        poster_path: result.poster_path,
+                    }));
+                setSearchingMovies(false);
                 setSearchedMovies(strippedResults);
             });
     }
@@ -124,17 +118,6 @@ export default function MovieList(props: MovieListProps) {
     function toggleAddMovieModal() {
         setAddingMovies(!addingMovies);
     }
-
-    const addMoveButtonTheme = createMuiTheme({
-        palette: {
-          primary: {
-              main: 'rgb(45, 152, 70)',
-              contrastText: '#fff'
-          }
-        }
-      });
-
-    console.log(movies);
 
     return (
         <div className={styles.movieListContainer}>
@@ -151,7 +134,7 @@ export default function MovieList(props: MovieListProps) {
                 >
                     <DialogTitle id="scroll-dialog-title">
                         Add Movie to List
-                        </DialogTitle>
+                    </DialogTitle>
                     <DialogContent dividers>
                         <div className={styles.searchSection}>
                             <TextField
@@ -169,7 +152,7 @@ export default function MovieList(props: MovieListProps) {
                                 handleSelection={handleSubmitMovie}
                                 action={{
                                     enabled: true,
-                                    actionType: 'Add'
+                                    actionType: 'Add',
                                 }}
                                 data={movie}
                                 loading={submittingMovie === movie.id}
@@ -189,49 +172,40 @@ export default function MovieList(props: MovieListProps) {
                 </Dialog>
             )}
             { loadingMovies
-                ? <div className={styles.moviesLoading}>
-                    <CircularProgress />
-                </div>
+                ? (
+                    <div className={styles.moviesLoading}>
+                        <CircularProgress />
+                    </div>
+                )
                 : (
                     <div className={styles.moviesLoaded}>
-                        { list.id && movies.length > 0 && (
+                        { list.id && (
                             <section>
                                 <div className={styles.listMeta}>
                                     <div className={styles.listName}>{list.name} ({movies.length})</div>
-                                    <ThemeProvider theme={addMoveButtonTheme}>
-                                        <Button variant="contained" color="primary" onClick={toggleAddMovieModal}>
-                                            Add Movie
-                                        </Button>
-                                    </ThemeProvider>
+                                    <Button variant="contained" color="secondary" onClick={toggleAddMovieModal}>
+                                        Add Movie
+                                    </Button>
                                 </div>
-                                { movies.map(movie => (
-                                    <MovieRow
-                                        key={movie.id}
-                                        data={movie}
-                                        loading={watchingMovie === movie.id}
-                                        handleSelection={handleWatchedMovie}
-                                        action={{
-                                            enabled: true,
-                                            actionType: 'Check'
-                                        }}
-                                    />
-                                ))}
+                                { movies.length > 0
+                                    ? movies.map((movie) => (
+                                        <MovieRow
+                                            key={movie.id}
+                                            data={movie}
+                                            loading={watchingMovie === movie.id}
+                                            handleSelection={handleWatchedMovie}
+                                            action={{
+                                                enabled: true,
+                                                actionType: 'Check',
+                                            }}
+                                        />
+                                    ))
+                                    : (
+                                        <div className={styles.emptyList}>
+                                            No Movies Here
+                                        </div>
+                                    )}
                             </section>
-                        )}
-                        { list.id && movies.length === 0 && (
-                            <div className={styles.deadList}>
-                                <div>
-                                    <span className={styles.listName}>{list.name}</span> contains no movies, care to
-                                    <ThemeProvider theme={addMoveButtonTheme}>
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            size="large"
-                                            onClick={toggleAddMovieModal}
-                                        > add one?</Button>
-                                    </ThemeProvider>
-                                </div>
-                            </div>
                         )}
                         { !list.id && (
                             <div className={styles.deadList}>

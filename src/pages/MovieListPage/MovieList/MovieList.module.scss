@@ -2,29 +2,39 @@
     height: 100%;
     display: flex;
 
+    .moviesLoaded {
+      width: 80vw;
+
+      section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .emptyList {
+          margin-top: 12px;
+        }
+        
+      }
+  
+      .listMeta {
+        display: flex;
+        justify-content: space-between;
+        width: calc(100% - 48px);
+        margin-top: 24px;
+  
+        .listName {
+          font-weight: 500;
+          font-size: 24px;
+        }
+      }
+    }
+
     .moviesLoading {
       display: flex;
       justify-content: center;
       width: 100%;
       margin-top: 25px;
-    }
-
-    .moviesLoaded section {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .listMeta {
-      display: flex;
-      justify-content: space-between;
-      width: calc(100% - 48px);
-
-      .listName {
-        font-weight: 500;
-        font-size: 24px;
-      }
     }
 }
 
@@ -45,16 +55,4 @@
     align-items: center;
     justify-content: center;
   }
-}
-
-.deadList {
-    display: flex;
-    flex-grow: 1;
-    align-items: center;
-    font-size: 36px;
-
-    .listName {
-        color: blue;
-        font-weight: 500;
-    }
 }

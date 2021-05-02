@@ -1,0 +1,15 @@
+.authenticationPage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+    .logo {
+        height: 128px;
+    }
+
+    .modeButtons {
+        margin-top: 12px;
+    }
+}

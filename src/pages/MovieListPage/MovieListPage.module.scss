@@ -1,26 +1,65 @@
 .movieListPage {
     display: flex;
     flex-direction: column;
-    align-items: center;
     height: 100vh;
+
+    .appBar {
+        .toolBar {
+            display: flex;
+            justify-content: space-between;
+            .title {
+            }
+        }
+    }
 
     .listLoading {
         display: flex;
         margin-top: 24px;
     }
 
-    .listSelection {
+    .listSection {
+        height: 100%;
         display: flex;
-        align-items: center;
-        justify-content: center;
 
-        .listSelector {
-            width: 200px;
-            margin-left: 2px;
+        .listPageBody {
+            display: flex;
+
+            .listCard {
+                width: 120px;
+            }
+        }
+        
+        .listSelection {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+    
+            .form {
+                display: flex;
+                flex-direction: row;
+                align-items: flex-end;
+            }
+
+            .noLists {
+                display: flex;
+            }
+    
+            .listSelector {
+                width: 200px;
+                margin-left: 2px;
+            }
         }
     }
-    
-    .listsContainer {
-        
+
+ 
+}
+
+.listNameForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .inputField {
+        margin-bottom: 12px;
     }
 }
